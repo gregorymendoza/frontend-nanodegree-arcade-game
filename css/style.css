@@ -1,4 +1,10 @@
 body {
+	font-family: 'Bungee', cursive;
+	font-size: 16px;
     text-align: center;
     background-image: url("../images/bg-pattern.png");
+}
+
+.main-title {
+	font-size: 38px;
 }
