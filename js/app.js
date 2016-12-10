@@ -2,6 +2,9 @@
 var pStartX = 202;
 var pStartY = 300;
 
+var eStartX = [-82, -182, -382, -482, -682, -882];
+var eStartY = [62, 142, 225];
+
 // Enemies our player must avoid
 var Enemy = function(x, y) {
     // Variables applied to each of our instances go here,
@@ -14,16 +17,30 @@ var Enemy = function(x, y) {
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Update the enemy's position, required method for game
+// Update the enemy's position, required method for the game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = (this.x < 505) ? this.x += dt * 160 : this.x = -82;
+
+    if (this.x < 505) {
+        this.x += dt * 180;
+    } else {
+        this.x = eStartX[Math.floor(Math.random() * eStartX.length)];
+        this.y = eStartY[Math.floor(Math.random() * eStartY.length)];
+    }
+
+    if (this.x < player.x + 62 &&
+        this.x + 72 > player.x &&
+        this.y < player.y + 76 &&
+        66 + this.y > player.y) {
+            console.log('Collision!');
+            player.restart();
+    }
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen, required method for the game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
@@ -72,14 +89,11 @@ Player.prototype.restart = function() {
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-var allEnemies = [
-    new Enemy(-282, 142),
-    new Enemy(-82, 225),
-    new Enemy(-482, 62),
-    new Enemy(-882, 142),
-    new Enemy(-382, 225),
-    new Enemy(-182, 62)
-];
+var allEnemies = [];
+
+for (var i=0; i < 6; i++) {
+    allEnemies.push(new Enemy(eStartX[Math.floor(Math.random() * eStartX.length)], eStartY[Math.floor(Math.random() * eStartY.length)]));
+}
 
 // Place the player object in a variable called player
 var player = new Player(pStartX, pStartY);
