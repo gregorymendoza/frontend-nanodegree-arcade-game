@@ -4,13 +4,18 @@ var pStartY = 300;
 
 var eStartX = [-82, -182, -382, -482, -682, -882];
 var eStartY = [62, 142, 225];
+var eSpeed = [150, 200, 250, 300];
+
+var score = 0;
+document.getElementById('score').innerHTML = score;
 
 // Enemies our player must avoid
-var Enemy = function(x, y) {
+var Enemy = function(x, y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.x = x;
     this.y = y;
+    this.speed = speed;
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -25,17 +30,18 @@ Enemy.prototype.update = function(dt) {
     // all computers.
 
     if (this.x < 505) {
-        this.x += dt * 180;
+        this.x += dt * this.speed;
     } else {
         this.x = eStartX[Math.floor(Math.random() * eStartX.length)];
         this.y = eStartY[Math.floor(Math.random() * eStartY.length)];
     }
 
+    // Detect collision between enemy and player
     if (this.x < player.x + 62 &&
         this.x + 72 > player.x &&
         this.y < player.y + 76 &&
         66 + this.y > player.y) {
-            console.log('Collision!');
+            console.log('Collision Detected!');
             player.restart();
     }
 };
@@ -56,7 +62,12 @@ var Player = function() {
 
 // Update the enemy's position, required method for game
 Player.prototype.update = function() {
-
+    // Increases the score and resets position when the player reaches the water
+    if (this.y < 54) {
+        score++;
+        document.getElementById('score').innerHTML = score;
+        this.restart();
+    }
 };
 
 // Draw the player on the screen, required method for game
@@ -64,12 +75,10 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Evaluate directional keys to move player accordinly
 Player.prototype.handleInput = function(keyDirection) {
     if(keyDirection == 'up' && this.y > -28) {
         this.y -= 82;
-    }
-    if (this.y < 54) {
-        this.restart();
     }
     if(keyDirection == 'down' && this.y < 382) {
         this.y += 82;
@@ -82,6 +91,7 @@ Player.prototype.handleInput = function(keyDirection) {
     }
 };
 
+// Restarts player coordinates
 Player.prototype.restart = function() {
     this.x = pStartX;
     this.y = pStartY;
@@ -91,8 +101,9 @@ Player.prototype.restart = function() {
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 
+// Push random coordinates and speeds to allEnemies from declared arrays
 for (var i=0; i < 6; i++) {
-    allEnemies.push(new Enemy(eStartX[Math.floor(Math.random() * eStartX.length)], eStartY[Math.floor(Math.random() * eStartY.length)]));
+    allEnemies.push(new Enemy(eStartX[Math.floor(Math.random() * eStartX.length)], eStartY[Math.floor(Math.random() * eStartY.length)], eSpeed[Math.floor(Math.random() * eSpeed.length)]));
 }
 
 // Place the player object in a variable called player
