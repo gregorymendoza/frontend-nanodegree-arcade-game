@@ -5,6 +5,11 @@ body {
     background-image: url("../images/bg-pattern.png");
 }
 
-.main-title {
+#main-title {
 	font-size: 38px;
+	margin-bottom: 0;
+}
+
+h3 {
+	margin: 0;
 }
